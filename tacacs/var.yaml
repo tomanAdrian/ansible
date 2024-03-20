@@ -1,0 +1,4 @@
+tacasc_ip_variable: '10.1.1.1'
+tacasc_key_variable: 'tajnyKluc1'
+radius_ip_variable: '10.2.2.2'
+radius_key_variable: 'tajnyKluc2'

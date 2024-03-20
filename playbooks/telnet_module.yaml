@@ -1,0 +1,24 @@
+---
+- name: Get Configuration via Telnet
+  hosts: Telnet_Routers
+  gather_facts: false
+  vars:
+    ansible_user: admin
+    ansible_password: admin
+
+  tasks:
+    - name: Get configuration
+      ansible.netcommon.telnet:
+        user: "{{ ansible_user }}"
+        password: "{{ ansible_password }}"
+        login_prompt: 'Username: '
+        prompts:
+          - '[>#]'
+        command:
+#          - terminal length 0
+          - show running-config
+      register: output
+
+    - name: Print configuration
+      ansible.builtin.debug:
+        msg: "{{ output }}"

@@ -1,0 +1,23 @@
+aaa new-model
+tacacs server TACACS-KIS1
+    address ipv4 {{ tacasc_ip_variable }}
+    single-connection
+    key {{ tacasc_key_variable }}
+!
+radius server RADIUS-ON-DC
+    address ipv4 {{ radius_ip_variable }}
+    key {{ radius_key_variable }}
+aaa authorization config-commands
+aaa authorization console
+service password-encryption
+aaa authentication login KIS_AUTENT group tacacs+ group radius local
+aaa authorization exec KIS_AUTOR group tacacs+ group radius local
+aaa authorization commands 15 KIS_AUTOR_CMDS group tacacs+ local
+line con 0
+    login authentication KIS_AUTENT
+    authorization exec KIS_AUTOR
+    authorization commands 15 KIS_AUTOR_CMDS  
+line vty 0 15
+    login authentication KIS_AUTENT
+    authorization exec KIS_AUTOR
+    authorization commands 15 KIS_AUTOR_CMDS

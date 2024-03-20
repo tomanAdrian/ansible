@@ -1,0 +1,30 @@
+- name: Get Configuration
+  hosts: MikroTik_Router, Cisco_Routers
+  gather_facts: false
+
+  vars:
+    ansible_connection: network_cli
+
+  tasks:
+    - name: TEST
+      ansible.builtin.include_tasks: getconf.yaml
+
+    - name: Print Cisco IOS configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ ios_output.stdout_lines }}"
+      when: ansible_network_os == 'ios'
+
+    - name: Print MikroTik configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ mikrotik_output.stdout_lines }}"
+      when: ansible_network_os == 'routeros'
+
+    - name: Print Juniper configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ juniper_output.stdout_lines }}"
+      when: ansible_network_os == 'junos'
+
+    - name: Print Fortinet configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ fortinet_output.results }}"
+      when: ansible_network_os == 'fortios'

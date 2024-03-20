@@ -1,0 +1,51 @@
+
+[Cisco_Routers]
+R1 ansible_host=158.193.152.138 ansible_port=2201
+R2 ansible_host=158.193.152.138 ansible_port=2202
+R3 ansible_host=158.193.152.138 ansible_port=2203
+
+[Cisco_Routers:vars]
+ansible_user=admin
+ansible_password=admin
+ansible_network_os=ios
+ansible_connection=network_cli
+
+[MikroTik_Router]
+Mikrotik ansible_host=158.193.152.138 ansible_port=2207 ansible_user=admin ansible_password=atoman ansible_network_os=routeros ansible_connection=network_cli
+
+[Juniper_Router]
+Juniper ansible_host=158.193.152.138 ansible_port=2208 ansible_user=admin ansible_password=Atoman1 ansible_network_os=junos ansible_connection=ansible.netcommon.network_cli
+
+[Fortinet_Router]
+Fortigate ansible_host=158.193.152.138 ansible_port=2209 ansible_user=admin ansible_password=admin ansible_network_os=fortinet.fortios.fortios ansible_python_interpreter=/usr/bin/python3
+
+[Cisco_Router]
+R3 ansible_host=158.193.152.138 ansible_port=2203 ansible_user=admin ansible_password=admin ansible_network_os=ios ansible_connection=network_cli
+
+[Nexus_Switch]
+Nexus nsible_host=158.193.152.138 ansible_port=2206 ansible_user=admin ansible_password=admin
+
+[Switches]
+ S1 ansible_host=158.193.152.138 ansible_port=2204
+ S2 ansible_host=158.193.152.138 ansible_port=2205
+
+[Switches:vars]
+ansible_user=admin
+ansible_password=admin
+
+[Telnet_Routers]
+Telnet_R1 ansible_host=158.193.152.130 ansible_port=5091
+Telnet_R2 ansible_host=158.193.152.130 ansible_port=5092
+Telnet_R3 ansible_host=158.193.152.130 ansible_port=5093
+
+[Telnet_Switches]
+Telnet_S1 ansible_host=158.193.152.130 ansible_port=5101
+Telnet_S2 ansible_host=158.193.152.130 ansible_port=5103
+
+[Routers_Tacas]
+R1_Tacas ansible_host=158.193.152.138 ansible_port=2201 tacacs_server_ip=3.3.3.3 secure_secret_password=ADHD  tacacs_encryption_key=ADHD
+#R2_Tacas ansible_host=158.193.152.138 ansible_port=2202 acacs_server_ip=3.3.3.3 secure_secret_password=ADHD  tacacs_encryption_key=ADHD
+#R3_Tacas ansible_host=158.193.152.138 ansible_port=2203 acacs_server_ip=3.3.3.3 secure_secret_password=ADHD  tacacs_encryption_key=ADHD
+
+[mikrotik_devices]
+Intrak ansible_host=192.168.88.1 ansible_user=admin ansible_password=atoman

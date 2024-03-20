@@ -1,0 +1,29 @@
+---
+- name: Get Configuration via Telnet
+  hosts: Telnet_Routers
+  gather_facts: false
+  vars:
+    ansible_user: admin
+    ansible_password: admin
+
+  tasks:
+    - name: Telnet and get configuration
+      ansible.builtin.expect:
+        command: telnet {{ ansible_host }} {{ ansible_port }}
+        responses:
+          "(?i)username:": "{{ ansible_user }}"
+          "(?i)password:": "{{ ansible_password }}"
+          "#": "terminal length 0\nshow running-config"
+        timeout: 30
+      register: telnet_output
+      ignore_errors: true
+
+    - name: Debug telnet output
+      ansible.builtin.debug:
+        var: telnet_output
+
+    - name: Save configuration to file
+      ansible.builtin.copy:
+        content: "{{ telnet_output.stdout_lines | join('\n') }}"
+        dest: "/path/to/destination/{{ inventory_hostname }}-config.txt"
+        mode: '0644'

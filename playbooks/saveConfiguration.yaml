@@ -1,0 +1,62 @@
+---
+- name: Get Configuration
+  hosts: Cisco_Routers, MikroTik_Router, Juniper_Router
+  gather_facts: false
+
+  vars:
+    output_directory: "/home/adrian-toman/Plocha/config/"
+
+  tasks:
+    - name: Get configuration for Cisco IOS
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: ios_output
+      when: ansible_network_os == 'ios'
+
+    - name: Save Cisco IOS configuration to file
+      ansible.builtin.copy:
+        content: "{{ ios_output.stdout[0] if ios_output.stdout is defined else '' }}"
+        dest: "{{ output_directory }}/{{ inventory_hostname }}-ios-config.txt"
+        mode: '0644'
+      when: ansible_network_os == 'ios'
+
+    - name: Get configuration for MikroTik
+      community.routeros.command:
+        commands:
+          - /export
+      register: mikrotik_output
+      when: ansible_network_os == 'routeros'
+
+    - name: Save MikroTik configuration to file
+      ansible.builtin.copy:
+        content: "{{ mikrotik_output.stdout[0] if mikrotik_output.stdout is defined else '' }}"
+        dest: "{{ output_directory }}/{{ inventory_hostname }}-mikrotik-config.txt"
+        mode: '0644'
+      when: ansible_network_os == 'routeros'
+
+    - name: Get configuration for Juniper
+      junipernetworks.junos.junos_command:
+        commands:
+          - show configuration | display set
+      register: juniper_output
+      when: ansible_network_os == 'junos'
+
+    - name: Save Juniper configuration to file
+      ansible.builtin.copy:
+        content: "{{ juniper_output.stdout[0] if juniper_output.stdout is defined else '' }}"
+        dest: "{{ output_directory }}/{{ inventory_hostname }}-juniper-config.txt"
+        mode: '0644'
+      when: ansible_network_os == 'junos'
+
+    - name: Get configuration for Fortinet
+      fortinet.fortios.fortios_configuration_fact:
+      register: fortinet_output
+      when: ansible_network_os == 'fortios'
+
+    - name: Save Fortinet configuration to file
+      ansible.builtin.copy:
+        content: "{{ fortinet_output.ansible_facts.fortios_configuration_fact if fortinet_output.ansible_facts.fortios_configuration_fact is defined else '' }}"
+        dest: "{{ output_directory }}/{{ inventory_hostname }}-fortinet-config.txt"
+        mode: '0644'
+      when: ansible_network_os == 'fortios'

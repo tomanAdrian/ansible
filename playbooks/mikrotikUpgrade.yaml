@@ -1,0 +1,65 @@
+---
+- name: Mikrotik upgrade
+  hosts: mikrotik_devices
+  gather_facts: false
+
+  vars:
+    ansible_connection: network_cli
+    ansible_network_os: routeros
+    ansible_ssh_common_args: '-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+
+  tasks:
+    - name: Check for updates
+      community.routeros.command:
+        commands:
+          - /system package update check-for-updates
+      register: system_update_print
+
+    - name: Update Software
+      community.routeros.command:
+        commands:
+          - /system package update install
+      when: system_update_print.stdout[0] is not search('System is already up to date')
+
+    - name: Wait for device to become reachable
+      ansible.builtin.wait_for_connection:
+        sleep: 10
+        delay: 20
+        timeout: 600
+      when: system_update_print.stdout[0] is not search('System is already up to date')
+
+    - name: Check current Firmware
+      community.routeros.command:
+        commands:
+          - ':put [/system routerboard get current-firmware]'
+      register: firmware_current
+
+    - name: Check upgrade Firmware
+      community.routeros.command:
+        commands:
+          - ':put [/system routerboard get upgrade-firmware]'
+      register: firmware_upgrade
+
+    - name: Upgrade Firmware
+      community.routeros.command:
+        commands:
+          - ':execute script="/system routerboard upgrade"'
+      when: firmware_current.stdout[0] != firmware_upgrade.stdout[0]
+
+    - name: Wait for firmware upgrade and then reboot Mikrotik
+      community.routeros.command:
+        commands:
+          - /system routerboard print
+      register: reboot_status
+      until: reboot_status.stdout[0] is search("please reboot")
+      retries: 3
+      delay: 15
+      when: firmware_current.stdout[0] != firmware_upgrade.stdout[0]
+      notify:
+        - Reboot Mikrotik
+
+  handlers:
+    - name: Reboot Mikrotik
+      community.routeros.command:
+        commands:
+          - ':execute script="/system reboot"'

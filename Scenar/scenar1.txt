@@ -1,0 +1,8 @@
+[Telnet_Routers]
+R1 ansible_host=158.193.152.130 ansible_port=5076 ansible_connection=telnet
+R2 ansible_host=158.193.152.130 ansible_port=5077 ansible_connection=telnet
+R3 ansible_host=158.193.152.130 ansible_port=5078 ansible_connection=telnet
+
+[Telnet_Switches]
+S1 ansible_host=158.193.152.130 ansible_port=5021 ansible_connection=telnet
+S2 ansible_host=158.193.152.130 ansible_port=5081 ansible_connection=telnet

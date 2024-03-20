@@ -1,0 +1,85 @@
+---
+- name: Configure SNMP, CDP, and LLDP across multiple platforms
+  hosts: Cisco_Router, MikroTik_Router, Juniper_Router
+  gather_facts: false
+  vars:
+    snmp_community: test
+    snmp_location: BratislavaDataCenter3Rack7
+
+  tasks:
+    - name: Configure Cisco devices
+      when: ansible_network_os == 'ios'
+      block:
+        - name: Enable LLDP service
+          cisco.ios.ios_lldp:
+            state: enabled
+
+        - name: Configure SNMP server
+          cisco.ios.ios_snmp_server:
+            config:
+              communities:
+                - name: "{{ snmp_community }}"
+                - ro: true
+              contact: "Pavel.Segec@fri.uniza.sk"
+              location: "{{ snmp_location }}"
+            state: replaced
+
+        - name: Enable CDP
+          cisco.ios.ios_command:
+            commands:
+              - "cdp run"
+
+    - name: Configure MikroTik devices
+      when: ansible_network_os == 'routeros'
+      block:
+        - name: Enable LLDP, MNDP, and CDP
+          community.routeros.command:
+            commands:
+              - /ip neighbor discovery-settings set discover-interface-list=all protocol=lldp,mndp,cdp
+
+        - name: Configure SNMP
+          community.routeros.command:
+            commands:
+              - /snmp set contact=\"Pavel.Segec@fri.uniza.sk\" enabled=yes location={{ snmp_location }} trap-community={{ snmp_community }} trap-version=2
+
+    - name: Configure Juniper devices
+      when: ansible_network_os == 'junos'
+      block:
+        - name: Enable LLDP globally
+          junipernetworks.junos.junos_lldp_global:
+            config:
+              - enabled: true
+            state: present
+
+        - name: Configure SNMP server
+          junipernetworks.junos.junos_snmp_server:
+            config:
+              communities:
+                - name: "{{ snmp_community }}"
+                - authorization: read-only
+              contact: "Pavel.Segec@fri.uniza.sk"
+              location: "{{ snmp_location }}"
+              state: replaced
+
+    - name: Configure Fortinet devices
+      when: ansible_network_os == 'fortios'
+      block:
+        - name: Configure SNMP community
+          fortinet.fortios.fortios_switch_controller_snmp_community:
+            state: present
+            config:
+              name: "{{ snmp_community }}"
+              events: enable
+
+        - name: Configure SNMP system information
+          fortinet.fortios.fortios_switch_controller_snmp_sysinfo:
+            state: present
+            config:
+              location: "{{ snmp_location }}"
+              contact_info: "Pavel.Segec@fri.uniza.sk"
+
+        - name: Enable LLDP globally
+          fortinet.fortios.fortios_switch_controller_lldp_settings:
+            state: present
+            config:
+              status: enable

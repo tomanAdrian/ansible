@@ -1,0 +1,62 @@
+---
+- name: Configure switch interface and port-channel settings
+  hosts: Nexus_Switch
+  gather_facts: false
+  vars:
+    ansible_user: admin
+    ansible_password: admin
+    ansible_network_os: ios
+    ansible_connection: network_cli
+    interface_name: GigabitEthernet0/0
+    port_channel: Port-channel12
+    native_vlan: 11
+    allowed_vlans: "11-12,20,153-154,203,254,500"
+    description: Ctrl2
+    channel_group_mode: active
+    port_channel_speed: 10000
+    vpc_id: 12
+
+  tasks:
+    - name: Configure interface description
+      cisco.ios.ios_interfaces:
+        config:
+          - name: "{{ interface_name }}"
+            description: "{{ description }}"
+
+    - name: Configure interface for L2 settings
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: "{{ interface_name }}"
+            mode: "trunk"
+            trunk:
+              native_vlan: "{{ native_vlan }}"
+              allowed_vlans: "{{ allowed_vlans }}"
+
+    - name: Assign interface to channel-group
+      cisco.ios.ios_lag_interfaces:
+        config:
+          - name: "{{ port_channel }}"
+            members:
+              - member: "{{ interface_name }}"
+                mode: "{{ channel_group_mode }}"
+
+    - name: Configure Port-channel with L2 and speed settings
+      cisco.ios.ios_interfaces:
+        config:
+          - name: "{{ port_channel }}"
+            description: "{{ description }}"
+            speed: "{{ port_channel_speed }}"
+
+    - name: Apply L2 settings to Port-channel
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: "{{ port_channel }}"
+            mode: "trunk"
+            trunk:
+              native_vlan: "{{ native_vlan }}"
+              allowed_vlans: "{{ allowed_vlans }}"
+
+    - name: Configure VPC on Port-channel
+      cisco.nxos.nxos_vpc_interface:
+        portchannel: "{{ port_channel }}"
+        vpc: "{{ vpc_id }}"

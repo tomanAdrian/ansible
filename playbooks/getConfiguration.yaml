@@ -1,0 +1,28 @@
+---
+- name: Get Configuration
+  hosts: Routers
+  gather_facts: false
+
+  vars:
+    ansible_user: admin
+    ansible_password: admin
+    ansible_network_os: ios
+    ansible_connection: network_cli
+    output_directory: "/home/adrian-toman/Plocha/config/"
+
+  tasks:
+    - name: Get configuration
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: print_output
+
+    - name: Save configuration to file
+      ansible.builtin.copy:
+        content: "{{ print_output.stdout[0] }}"
+        dest: "{{ output_directory }}/{{ inventory_hostname }}-config.txt"
+        mode: '0644'
+
+    - name: Print configuration
+      ansible.builtin.debug:
+        msg: "{{ print_output.stdout_lines }}"

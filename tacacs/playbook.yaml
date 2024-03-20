@@ -1,0 +1,25 @@
+---
+- name: TACACS and RADIUS configuration
+  hosts: Routers_Tacas
+  gather_facts: false
+  vars_files:
+    - var.yaml
+  vars:
+    ansible_user: admin
+    ansible_password: admin
+    ansible_network_os: ios
+    ansible_connection: network_cli
+
+  tasks:
+    - name: Remove old configurations
+      cisco.ios.ios_config:
+        lines:
+          - "no aaa group server radius KIS-DC"
+          - "no aaa authentication login default group KIS-DC local"
+          - "no aaa authorization exec default group KIS-DC local"
+          - "no tacacs server TACACS-KIS1"
+          - "no radius server RADIUS-ON-DC"
+
+    - name: Add new configurations from template
+      cisco.ios.ios_config:
+        src: tacacs_radius_template.j2

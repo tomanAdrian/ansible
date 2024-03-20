@@ -1,0 +1,2 @@
+snmp_community: "public"
+snmp_location: BratislavaDataCenter3Rack7

@@ -1,0 +1,29 @@
+Posielam vam este aktualizovanu konfiguraciu Tacacsu. Prosim ak by ste zmeny zapracovali do vasho scenaru (premenne su v <>):
+ 
+toto zmazat
+----------
+no aaa group server radius KIS-DC
+no aaa authentication login default group KIS-DC local
+no aaa authorization exec default group KIS-DC local
+no tacacs server TACACS-KIS1
+no radius server RADIUS-ON-DC
+toto pridat
+---------
+aaa new-model 
+tacacs server TACACS-KIS1
+	address ipv4 <TACASC_IP_VARIABLE>
+	single-connection
+	key <TACASC_KEY_VARIABLE>
+!
+radius server RADIUS-ON-DC
+	address ipv4 <RADIUS_IP_VARIABLE>
+	key <RADIUS_KEY_VARIABLE>
+aaa authentication login KIS_AUTENT group tacacs+ group radius local
+aaa authorization exec KIS_AUTOR group tacacs+ group radius local
+aaa authorization commands 15 KIS_AUTOR_CMDS group tacacs+ local
+line con 0
+	login authentication KIS_AUTENT
+	authorization exec KIS_AUTOR
+line vty 0 15
+	login authentication KIS_AUTENT
+	authorization exec KIS_AUTOR

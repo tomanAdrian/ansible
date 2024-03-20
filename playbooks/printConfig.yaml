@@ -1,0 +1,53 @@
+- name: Get Configuration
+  hosts: MikroTik_Router, Cisco_Routers
+  gather_facts: false
+
+  vars:
+    ansible_connection: network_cli
+
+  tasks:
+    - name: Get configuration for Cisco IOS
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: ios_output
+      when: ansible_network_os == 'ios'
+
+    - name: Get configuration for MikroTik
+      community.routeros.command:
+        commands:
+          - /export show-sensitive
+      register: mikrotik_output
+      when: ansible_network_os == 'routeros'
+
+    - name: Get configuration for Juniper
+      junipernetworks.junos.junos_command:
+        commands:
+          - show configuration | display set
+      register: juniper_output
+      when: ansible_network_os == 'junos'
+
+    - name: Get configuration for Fortinet
+      fortinet.fortios.fortios_configuration_fact:
+      register: fortinet_output
+      when: ansible_network_os == 'fortios'
+
+    - name: Print Cisco IOS configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ ios_output.stdout_lines }}"
+      when: ansible_network_os == 'ios'
+
+    - name: Print MikroTik configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ mikrotik_output.stdout_lines }}"
+      when: ansible_network_os == 'routeros'
+
+    - name: Print Juniper configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ juniper_output.stdout_lines }}"
+      when: ansible_network_os == 'junos'
+
+    - name: Print Fortinet configuration to terminal
+      ansible.builtin.debug:
+        msg: "{{ fortinet_output.results }}"
+      when: ansible_network_os == 'fortios'

@@ -1,0 +1,21 @@
+---
+- name: Get Configuration
+  hosts: Switches
+  gather_facts: false
+
+  vars:
+    ansible_user: admin
+    ansible_password: admin
+    ansible_network_os: ios
+    ansible_connection: network_cli
+
+  tasks:
+    - name: Get configuration
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: print_output
+
+    - name: Print configuration
+      ansible.builtin.debug:
+        msg: "{{ print_output.stdout_lines }}"

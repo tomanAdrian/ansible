@@ -1,0 +1,3 @@
+potrebujeme nastavit na cisco routroch tacas autentifikaciu
+treba vytvorit playbook, ktory bude parametrizovany, kde si vieme povedat  parametre cez host ako je IP adresa, port a podobne
+treba toto vsetko nastavit cez ansible
