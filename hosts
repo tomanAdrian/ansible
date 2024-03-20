@@ -23,7 +23,7 @@ Fortigate ansible_host=158.193.152.138 ansible_port=2209 ansible_user=admin ansi
 R3 ansible_host=158.193.152.138 ansible_port=2203 ansible_user=admin ansible_password=admin ansible_network_os=ios ansible_connection=network_cli
 
 [Nexus_Switch]
-Nexus nsible_host=158.193.152.138 ansible_port=2206 ansible_user=admin ansible_password=admin
+Nexus nsible_host=158.193.152.138 ansible_port=2206 ansible_user=admin ansible_password=Atoman113
 
 [Switches]
  S1 ansible_host=158.193.152.138 ansible_port=2204
