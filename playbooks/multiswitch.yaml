@@ -3,16 +3,16 @@
   hosts: Nexus_Switch
   gather_facts: false
   vars:
-    ansible_network_os: ios
+    ansible_network_os: nxos
     ansible_connection: network_cli
-    interface_name: GigabitEthernet0/0
-    port_channel: Port-channel12
+    interface_name: Ethernet1/2
+    port_channel: port-channel12
     native_vlan: 11
     allowed_vlans: "11-12,20,153-154,203,254,500"
     description: Ctrl2
     channel_group_mode: active
     port_channel_speed: 10000
-    vpc_id: 12
+    vpc_id: "12"
 
   tasks:
     - name: Configure interface description
@@ -54,7 +54,17 @@
               native_vlan: "{{ native_vlan }}"
               allowed_vlans: "{{ allowed_vlans }}"
 
+    - name: Extract port-channel number from string
+      ansible.builtin.set_fact:
+        port_channel_number: "{{ port_channel | regex_search('\\d+') }}"
+
+
+    - name: Configure vPC domain ID
+      cisco.nxos.nxos_config:
+        lines:
+          - 'vpc domain {{ vpc_id }}'
+
     - name: Configure VPC on Port-channel
       cisco.nxos.nxos_vpc_interface:
-        portchannel: "{{ port_channel }}"
+        portchannel: "{{ port_channel_number }}"
         vpc: "{{ vpc_id }}"

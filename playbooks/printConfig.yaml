@@ -1,5 +1,5 @@
 - name: Get Configuration
-  hosts: MikroTik_Router, Cisco_Routers
+  hosts: Fortinet_Router
   gather_facts: false
 
   vars:
@@ -30,7 +30,7 @@
     - name: Get configuration for Fortinet
       fortinet.fortios.fortios_configuration_fact:
       register: fortinet_output
-      when: ansible_network_os == 'fortios'
+      when: ansible_network_os == 'fortinet'
 
     - name: Print Cisco IOS configuration to terminal
       ansible.builtin.debug:
@@ -50,4 +50,4 @@
     - name: Print Fortinet configuration to terminal
       ansible.builtin.debug:
         msg: "{{ fortinet_output.results }}"
-      when: ansible_network_os == 'fortios'
+      when: ansible_network_os == 'fortinet.fortios.fortios'
