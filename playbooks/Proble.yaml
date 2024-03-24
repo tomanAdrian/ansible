@@ -1,0 +1,9 @@
+- name: Which Python
+  command: which python
+  register: which_python
+- debug: var=which_python.stdout
+
+- name: Ansible version
+  command: ansible --version
+  register: ansible_version
+- debug: var=ansible_version.stdout

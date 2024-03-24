@@ -1,6 +1,8 @@
 - name: Get Configuration
   hosts: Cisco_Routers
   gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/lib/python3/dist-packages/ansible
 
   tasks:
     - name: Get configuration for Cisco IOS
