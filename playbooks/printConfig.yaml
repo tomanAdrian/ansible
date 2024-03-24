@@ -3,7 +3,6 @@
   gather_facts: false
   vars:
     ansible_python_interpreter: /home/adrian-toman/Plocha/ansible/python/venv/bin/activate
-    
 
   tasks:
     - name: Get configuration for Cisco IOS
