@@ -1,0 +1,7 @@
+- name: common_role
+  src: https://github.com/username/common_role.git
+  version: master
+
+- name: another_role
+  src: https://github.com/username/another_role.git
+  version: v1.2.3
