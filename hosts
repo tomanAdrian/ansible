@@ -17,7 +17,15 @@ Mikrotik ansible_host=158.193.152.138 ansible_port=2207 ansible_user=admin ansib
 Juniper ansible_host=158.193.152.138 ansible_port=2208 ansible_user=admin ansible_password=Atoman1 ansible_network_os=junos ansible_connection=ansible.netcommon.network_cli
 
 [Fortinet_Router]
-Fortigate ansible_host=158.193.152.138 ansible_port=2209 ansible_user=admin ansible_password=admin ansible_network_os=fortinet
+Fortigate ansible_host=158.193.152.138 ansible_port=2209 ansible_user=admin ansible_password=admin
+
+[Fortinet_Router:vars]
+ansible_network_os=fortinet.fortios.fortios
+#vdom="root"
+#ansible_httpapi_use_ssl=yes
+#ansible_httpapi_validate_certs=no
+#ansible_httpapi_port=443
+
 
 [Cisco_Router]
 R3 ansible_host=158.193.152.138 ansible_port=2203 ansible_user=admin ansible_password=admin ansible_network_os=ios ansible_connection=network_cli

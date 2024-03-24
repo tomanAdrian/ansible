@@ -1,9 +1,6 @@
 - name: Get Configuration
-  hosts: Fortinet_Router
+  hosts: Cisco_Routers
   gather_facts: false
-
-  vars:
-    ansible_connection: network_cli
 
   tasks:
     - name: Get configuration for Cisco IOS
@@ -30,7 +27,7 @@
     - name: Get configuration for Fortinet
       fortinet.fortios.fortios_configuration_fact:
       register: fortinet_output
-      when: ansible_network_os == 'fortinet'
+      when: ansible_network_os == 'fortinet.fortios.fortios'
 
     - name: Print Cisco IOS configuration to terminal
       ansible.builtin.debug:

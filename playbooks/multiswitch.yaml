@@ -59,12 +59,13 @@
         port_channel_number: "{{ port_channel | regex_search('\\d+') }}"
 
 
-    - name: Configure vPC domain ID
-      cisco.nxos.nxos_config:
-        lines:
-          - 'vpc domain {{ vpc_id }}'
+#    - name: Configure vPC domain ID
+#      cisco.nxos.nxos_config:
+#        lines:
+#          - 'vpc domain {{ vpc_id }}'
 
     - name: Configure VPC on Port-channel
       cisco.nxos.nxos_vpc_interface:
         portchannel: "{{ port_channel_number }}"
         vpc: "{{ vpc_id }}"
+        state: absent
