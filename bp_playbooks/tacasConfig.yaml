@@ -1,0 +1,88 @@
+---
+- name: Configure TACACS Authentication
+  hosts: Routers_Tacas
+  gather_facts: false
+  vars:
+    ansible_user: admin
+    ansible_password: admin
+    ansible_network_os: ios
+    ansible_connection: network_cli
+
+  tasks:
+    - name: Retrieve current TACACS configuration
+      cisco.ios.ios_command:
+        commands:
+          - show running-config | include tacacs-server
+      register: current_tacacs_config
+
+    - name: Print OLD configuration
+      ansible.builtin.debug:
+        msg: "{{ current_tacacs_config.stdout_lines }}"
+
+    - name: Generate configuration commands
+      ansible.builtin.set_fact:
+        tacacs_configuration:
+          - "no aaa group server radius KIS-DC"
+          - "no aaa authentication login default group KIS-DC local"
+          - "no aaa authorization exec default group KIS-DC local"
+          - "aaa new-model"
+          - "tacacs server TACACS-KIS1"
+          - "tacacs-server host {{ tacacs_server_ip }}"
+          - "tacacs-server directed-request"
+          - "tacacs-server key 0 {{ tacacs_encryption_key }}"
+          - "service password-encryption"
+          - "enable secret 0 {{ secure_secret_password }}"
+          - "aaa new-model"
+          - "aaa authentication login default group tacacs+ local"
+          - "aaa authentication login console local"
+          - "aaa authorization config-commands"
+          - "aaa authorization exec default group tacacs+ local if-authenticated"
+          - "aaa authorization exec console if-authenticated"
+          - "aaa authorization commands 1 default group tacacs+ local if-authenticated"
+          - "aaa authorization commands 15 default group tacacs+ local if-authenticated"
+          - "aaa accounting exec default start-stop group tacacs+"
+          - "aaa accounting commands 1 default start-stop group tacacs+"
+          - "aaa accounting commands 15 default start-stop group tacacs+"
+          - "aaa session-id common"
+
+
+    - name: Compare old and new configuration
+      ansible.builtin.set_fact:
+        updated_tacacs_configuration: []
+
+    - name: Loop through old configuration
+      loop: "{{ current_tacacs_config.stdout_lines }}"
+      loop_control:
+        loop_var: line
+      when: "line not in tacacs_configuration"
+      ansible.builtin.set_fact:
+        updated_tacacs_configuration: "{{ updated_tacacs_configuration + line | map('regex_replace', '^(.*)$', 'no \\1') | list }}"
+
+    - name: Loop through new configuration
+      loop: "{{ tacacs_configuration }}"
+      loop_control:
+        loop_var: line
+      ansible.builtin.set_fact:
+        updated_tacacs_configuration: "{{ updated_tacacs_configuration + [line] }}"
+
+    - name: Print updated configuration
+      ansible.builtin.debug:
+        msg: "{{ updated_tacacs_configuration }}"
+
+    - name: Removing old configuration
+      cisco.ios.ios_config:
+        lines: "{{ updated_tacacs_configuration }}"
+
+    - name: Apply updated configuration
+      cisco.ios.ios_config:
+        lines: "{{ tacacs_configuration }}"
+
+    - name: Retrieve current TACACS configuration
+      cisco.ios.ios_command:
+        commands:
+          - show running-config | include tacacs-server
+      register: current_tacacs_config
+
+    - name: Print NEW configuration
+      ansible.builtin.debug:
+        msg: "{{ current_tacacs_config.stdout_lines }}"

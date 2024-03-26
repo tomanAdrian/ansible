@@ -1,0 +1,21 @@
+---
+- name: TACACS and RADIUS configuration
+  hosts: Routers_Tacas
+  gather_facts: false
+  vars_files:
+    - Vars/TacacsRadius.yaml
+
+  tasks:
+    - name: Remove old configurations
+      cisco.ios.ios_config:
+        lines:
+          - no aaa group server radius KIS-DC
+          - no aaa authentication login default group KIS-DC local
+          - no aaa authorization exec default group KIS-DC local
+          - no tacacs server TACACS-KIS1
+          - no radius server RADIUS-ON-DC
+      ignore_errors: yes
+
+    - name: Add new configurations from template
+      cisco.ios.ios_config:
+        src: Template/tacacs_radius_template.j2

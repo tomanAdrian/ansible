@@ -35,7 +35,7 @@ ansible_httpapi_port=443
 R3 ansible_host=158.193.152.138 ansible_port=2203 ansible_user=admin ansible_password=admin ansible_network_os=ios ansible_connection=network_cli
 
 [Nexus_Switch]
-Nexus ansible_host=158.193.152.138 ansible_port=2206 ansible_user=admin ansible_password=Atoman113 ansible_network_os=ios ansible_connection=network_cli
+Nexus ansible_host=158.193.152.138 ansible_port=2206 ansible_user=admin ansible_password=Atoman113 ansible_network_os=nxos ansible_connection=network_cli
 
 [Switches]
  S1 ansible_host=158.193.152.138 ansible_port=2204
@@ -58,6 +58,12 @@ Telnet_S2 ansible_host=158.193.152.130 ansible_port=5103
 R1_Tacas ansible_host=158.193.152.138 ansible_port=2201 tacacs_server_ip=3.3.3.3 secure_secret_password=ADHD  tacacs_encryption_key=ADHD
 #R2_Tacas ansible_host=158.193.152.138 ansible_port=2202 acacs_server_ip=3.3.3.3 secure_secret_password=ADHD  tacacs_encryption_key=ADHD
 #R3_Tacas ansible_host=158.193.152.138 ansible_port=2203 acacs_server_ip=3.3.3.3 secure_secret_password=ADHD  tacacs_encryption_key=ADHD
+
+[Routers_Tacas:vars]
+ansible_user=admin
+ansible_password=admin
+ansible_network_os=ios
+ansible_connection=network_cli
 
 [mikrotik_devices]
 Intrak ansible_host=192.168.88.1 ansible_user=admin ansible_password=atoman

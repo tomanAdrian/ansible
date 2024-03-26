@@ -1,0 +1,10 @@
+ansible_network_os: nxos
+ansible_connection: network_cli
+interface_name: Ethernet1/2
+port_channel: port-channel12
+native_vlan: 11
+allowed_vlans: "11-12,20,153-154,203,254,500"
+description: Ctrl2
+channel_group_mode: active
+port_channel_speed: 10000
+vpc_id: "12"
