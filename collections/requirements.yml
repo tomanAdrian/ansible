@@ -14,7 +14,3 @@ collections:
   - name: mikrotik.routeros
     version: 2.1.0
 
-dependencies:
-  - name: ansible.pylibssh
-    src: https://github.com/ansible/ansible-pylibssh.git
-    version: master
