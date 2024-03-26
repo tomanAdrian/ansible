@@ -3,12 +3,11 @@
   hosts: Routers
   gather_facts: false
   vars:
-    #ansible_python_interpreter: '/bin/python3'
+    ansible_python_interpreter: '/bin/python3'
   tasks:
-  
     - name: Python
       ansible.builtin.debug:
-      var: ansible_python_interpreter
+        var: ansible_python_interpreter
 
     - name: Include tasks
       ansible.builtin.include_tasks: Tasks/getConfigTask.yaml
