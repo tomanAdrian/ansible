@@ -2,8 +2,8 @@
 - name: Get Configuration
   hosts: Routers
   gather_facts: false
-
-
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
     - name: Include tasks
       ansible.builtin.include_tasks: Tasks/getConfigTask.yaml
