@@ -1,6 +1,6 @@
 ---
 - name: Configure SNMP, CDP, and LLDP across multiple platforms
-  hosts: Cisco_Router, MikroTik_Router, Juniper_Router
+  hosts:  Fortinet_Router
   gather_facts: false
   vars_files:
     - vars_SNMP.yaml
@@ -65,7 +65,7 @@
 #              state: replaced
 
     - name: Configure Fortinet devices
-      when: ansible_network_os == 'fortios'
+      when: ansible_network_os == 'fortinet.fortios.fortios'
       block:
         - name: Configure SNMP community
           fortinet.fortios.fortios_switch_controller_snmp_community:
@@ -77,7 +77,7 @@
 
         - name: Configure SNMP system information
           fortinet.fortios.fortios_switch_controller_snmp_sysinfo:
-            member_state: present
+            #member_state: present
             switch_controller_snmp_sysinfo:
               location: "{{ snmp_location }}"
               contact_info: "Pavel.Segec@fri.uniza.sk"

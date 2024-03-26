@@ -1,5 +1,5 @@
 - name: Get Configuration
-  hosts: Cisco_Routers
+  hosts: Fortinet_Router
   gather_facts: false
   vars:
     ansible_python_interpreter: "usr/lib/python3/"
@@ -28,6 +28,7 @@
 
     - name: Get configuration for Fortinet
       fortinet.fortios.fortios_configuration_fact:
+        selector: 'system_global'
       register: fortinet_output
       when: ansible_network_os == 'fortinet.fortios.fortios'
 
@@ -48,5 +49,8 @@
 
     - name: Print Fortinet configuration to terminal
       ansible.builtin.debug:
-        msg: "{{ fortinet_output.results }}"
+        var: fortinet_output
       when: ansible_network_os == 'fortinet.fortios.fortios'
+
+
+
