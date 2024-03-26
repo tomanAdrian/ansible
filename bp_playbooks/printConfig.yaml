@@ -6,7 +6,8 @@
     #ansible_python_interpreter: '/bin/python3'
   tasks:
   
-    - debug:
+    - name: python
+      ansible.builtin.debug:
       var: ansible_python_interpreter
 
     - name: Include tasks
