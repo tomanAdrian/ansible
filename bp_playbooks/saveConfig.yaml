@@ -2,6 +2,8 @@
 - name: Get Configuration
   hosts: Cisco_Routers, MikroTik_Router, Juniper_Router, Fortinet_Router
   gather_facts: false
+  var: 
+    output_directory: "/home/atoman/Plocha/config"
 
   tasks:
     - name: Include tasks
