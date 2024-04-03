@@ -3,9 +3,6 @@
   hosts: Cisco_Routers, MikroTik_Router, Juniper_Router, Fortinet_Router
   gather_facts: false
 
-  vars:
-    output_directory: "/home/adrian-toman/Plocha/config/"
-
   tasks:
     - name: Include tasks
       ansible.builtin.include_tasks: Tasks/getConfigTask.yaml
